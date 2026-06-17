@@ -1,0 +1,28 @@
+// tb_fir.v
+module tb_fir;
+    reg clk, rst;
+    reg signed [7:0] x_in;
+    wire signed [17:0] y_out;
+    
+    fir_filter uut(.clk(clk),.rst(rst),.x_in(x_in),.y_out(y_out));
+    
+    initial begin
+        clk = 0; forever #5 clk = ~clk; // 100MHz clock
+    end
+    
+    initial begin
+        rst = 1; x_in = 0; #20;
+        rst = 0;
+        
+        // Apply impulse
+        x_in = 8'd100; #10;
+        x_in = 0; #200;
+        
+        $finish;
+    end
+    
+    initial begin
+        $dumpfile("fir.vcd");
+        $dumpvars(0, tb_fir);
+    end
+endmodule
